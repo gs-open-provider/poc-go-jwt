@@ -99,9 +99,7 @@ func HandleRefresh(w http.ResponseWriter, r *http.Request) {
 		return jwtKey, nil
 	})
 	if !tkn.Valid {
-		logger.Log.Error("Unauthorized..")
-		// w.WriteHeader(http.StatusUnauthorized)
-		// return
+		logger.Log.Error("Unauthorized.. Trying to Refresh Token..")
 	}
 	if err != nil && !strings.Contains(err.Error(), "token is expired") {
 		logger.Log.Error(err.Error())

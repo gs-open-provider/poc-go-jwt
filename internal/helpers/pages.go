@@ -32,7 +32,7 @@ const IndexPage = `
 
 			welcome = () => {
 				console.log("Welcome Clicked..");
-				$.post({
+				$.ajax({
 					url: "http://localhost:9090/welcome",
 					type: 'post',
 					headers: {
@@ -47,6 +47,19 @@ const IndexPage = `
 
 			refresh = () => {
 				console.log("Refresh Clicked..");
+				$.ajax({
+					url: "http://localhost:9090/refresh",
+					type: 'post',
+					headers: {
+						Authorization: "bearer " + accessToken
+					},
+					success: function(data, status){
+						result = JSON.parse(data);
+						console.log(result);
+						accessToken = result.Value;
+						console.log(accessToken);
+					}
+				});
 			}
 		</script>
     </head>

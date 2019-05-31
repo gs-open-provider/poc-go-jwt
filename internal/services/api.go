@@ -29,4 +29,5 @@ func Welcome(w http.ResponseWriter, r *http.Request) {
 // Refresh Function
 func Refresh(w http.ResponseWriter, r *http.Request) {
 	logger.Log.Info("Refresh called..")
+	HandleRefresh(w, r)
 }

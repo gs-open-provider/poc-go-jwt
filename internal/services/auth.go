@@ -2,7 +2,6 @@ package services
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -29,7 +28,6 @@ func HandleSignin(w http.ResponseWriter, r *http.Request) {
 
 	expectedPassword, ok := mock.Users[creds.Username]
 	if !ok || expectedPassword != creds.Password {
-		fmt.Println(expectedPassword)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -86,8 +84,7 @@ func HandleWelcome(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	// claims := validateToken(w, r)
-	logger.Log.Info(fmt.Sprintf("Welcome %s!", claims.Username))
+	logger.Log.Info("Welcome %s!" + claims.Username)
 	json.NewEncoder(w).Encode(claims)
 }
 
@@ -139,29 +136,4 @@ func HandleRefresh(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(data)
 
-}
-
-func validateToken(w http.ResponseWriter, r *http.Request) *models.Claims {
-	accessToken := r.Header.Get("Authorization")
-	tknStr := strings.Split(accessToken, " ")[1]
-	logger.Log.Info(tknStr)
-
-	claims := &models.Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return claims
-	}
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return claims
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return claims
-	}
-
-	return claims
 }
